@@ -8,13 +8,30 @@
 
 import UIKit
 import Firebase
+import GoogleSignIn
 
+protocol FireAuthHelperGoogleDelegate: NSObjectProtocol {
+    func googleSignInSuccess(user: User)
+    func googleSignInError(error: NSError)
+}
+
+protocol FireAuthHelperFacebookDelegate: NSObjectProtocol {
+}
 
 class FireAuthHelper: NSObject {
     
     static let shared = FireAuthHelper()
+    weak var googleDelegate: FireAuthHelperGoogleDelegate?
     
-    override init(){}
+    override init(){
+        super.init()
+    }
+    
+}
+
+//MARK: - Email and Password
+
+extension FireAuthHelper {
     
     // Signup with Email and Password
     // Returns User object or Error
@@ -60,11 +77,11 @@ class FireAuthHelper: NSObject {
     // Logs out current user
     func logoutUser() {
         do {
-            try Auth.auth().signOut()
+          try Auth.auth().signOut()
             let appDelegate = UIApplication.shared.delegate as! AppDelegate
             appDelegate.redirectToLogin()
-        } catch {
-            print("Signup error")
+        } catch let signOutError as NSError {
+          print ("Error signing out: %@", signOutError)
         }
     }
     
@@ -87,4 +104,71 @@ class FireAuthHelper: NSObject {
             }
         }
     }
+
+}
+
+//MARK: - Google Signin
+
+extension FireAuthHelper: GIDSignInDelegate {
+    
+    func signInWithGoogle() {
+        GIDSignIn.sharedInstance()?.presentingViewController = UIApplication.shared.windows.first?.rootViewController
+        GIDSignIn.sharedInstance().delegate = self
+        GIDSignIn.sharedInstance()?.signIn()
+    }
+    
+    func signInWithGoogleCredentials(credential: AuthCredential) {
+        Auth.auth().signIn(with: credential) { (authResult, error) in
+            if let error = error {
+                let authError = error as NSError
+                if (authError.code == AuthErrorCode.secondFactorRequired.rawValue) {
+                    self.googleDelegate?.googleSignInError(error: authError)
+                } else {
+                    print(error.localizedDescription)
+                    self.googleDelegate?.googleSignInError(error: authError)
+                    //self.showMessagePrompt(error.localizedDescription)
+                    return
+                }
+                // ...
+                return
+            } else {
+                self.googleDelegate?.googleSignInSuccess(user: authResult!.user)
+            }
+            // User is signed in
+            // ...
+        }
+        
+    }
+    
+    //MARK: - GIDSignInDelegate
+    
+    func sign(inWillDispatch signIn: GIDSignIn!, error: Error!) {
+
+    }
+
+    func sign(_ signIn: GIDSignIn!,
+              present viewController: UIViewController!) {
+        UIApplication.shared.windows.first?.rootViewController?.present(viewController, animated: true, completion: nil)
+    }
+
+    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error?) {
+      // ...
+      if let error = error {
+        // ...
+        return
+      }
+
+      guard let authentication = user.authentication else { return }
+      let credential = GoogleAuthProvider.credential(withIDToken: authentication.idToken,
+                                                        accessToken: authentication.accessToken)
+      // ...
+        self.signInWithGoogleCredentials(credential: credential)
+    }
+
+    func sign(_ signIn: GIDSignIn!, didDisconnectWith user: GIDGoogleUser!, withError error: Error!) {
+        // Perform any operations when the user disconnects from app here.
+        // ...
+    }
+
+    
 }

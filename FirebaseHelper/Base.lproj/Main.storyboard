@@ -86,13 +86,23 @@
                                     <constraint firstAttribute="trailing" secondItem="ghl-by-epY" secondAttribute="trailing" constant="8" id="yWX-XY-9CB"/>
                                 </constraints>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0nw-5V-T8T">
+                                <rect key="frame" x="16" y="476" width="343" height="30"/>
+                                <state key="normal" title="Login with Google"/>
+                                <connections>
+                                    <action selector="btnLoginWithGoogleClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="geg-2I-Ck7"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="vYu-eU-gYE" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="G8O-LE-joF"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="0nw-5V-T8T" secondAttribute="trailing" constant="16" id="Nzn-cR-kJP"/>
                             <constraint firstItem="vYu-eU-gYE" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="SF7-32-Woh"/>
+                            <constraint firstItem="0nw-5V-T8T" firstAttribute="top" secondItem="vYu-eU-gYE" secondAttribute="bottom" constant="22.5" id="a7N-he-yAE"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="vYu-eU-gYE" secondAttribute="trailing" constant="16" id="gsf-nk-GOj"/>
                             <constraint firstItem="vYu-eU-gYE" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="nIv-Kg-dGL"/>
+                            <constraint firstItem="0nw-5V-T8T" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="qRz-rs-SFr"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
@@ -104,7 +114,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="898" y="139"/>
+            <point key="canvasLocation" x="896.79999999999995" y="138.98050974512745"/>
         </scene>
         <!--Login-->
         <scene sceneID="X1V-sq-xnP">

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class FHLoginVC: UIViewController {
 
@@ -19,7 +20,7 @@ class FHLoginVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        FireAuthHelper.shared.googleDelegate = self
         // Do any additional setup after loading the view.
     }
     
@@ -44,6 +45,11 @@ class FHLoginVC: UIViewController {
         self.navigationController?.pushViewController(resetPasswordVC, animated: true)
     }
     
+    @IBAction func btnLoginWithGoogleClicked(_ sender: Any) {
+        FireAuthHelper.shared.signInWithGoogle()
+    }
+    
+    
     //MARK: - Custom Methods
     func redirectToProfile() {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -57,4 +63,14 @@ class FHLoginVC: UIViewController {
         self.present(alert, animated: true, completion: nil)
     }
 
+}
+
+extension FHLoginVC: FireAuthHelperGoogleDelegate {
+    func googleSignInSuccess(user: User) {
+        self.redirectToProfile()
+    }
+    
+    func googleSignInError(error: NSError) {
+        self.showAlert(title: "Login Error", message: error.localizedDescription)
+    }
 }
